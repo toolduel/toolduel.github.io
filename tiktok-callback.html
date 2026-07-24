@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ToolDuel — TikTok Authorization</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#0d1117;color:#e6edf3;max-width:720px;margin:40px auto;padding:0 20px;line-height:1.6;text-align:center}
+h1{color:#fff}
+code{display:block;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px;word-break:break-all;font-size:15px;margin:20px 0;user-select:all}
+.ok{color:#3fb950}.err{color:#f85149}
+button{background:#238636;color:#fff;border:0;border-radius:8px;padding:10px 24px;font-size:15px;cursor:pointer}
+</style>
+</head>
+<body>
+<h1>TikTok Authorization</h1>
+<div id="out">Reading authorization response...</div>
+<script>
+const p = new URLSearchParams(location.search);
+const code = p.get("code");
+const err = p.get("error");
+const out = document.getElementById("out");
+if (code) {
+  out.innerHTML = '<p class="ok">Authorization successful. Copy this code and paste it to Ada:</p>'
+    + '<code id="c">' + code + '</code>'
+    + '<button onclick="navigator.clipboard.writeText(document.getElementById(\'c\').textContent)">Copy code</button>'
+    + '<p>You can close this window afterwards.</p>';
+} else if (err) {
+  out.innerHTML = '<p class="err">Authorization failed: ' + err + '</p><p>' + (p.get("error_description") || "") + '</p>';
+} else {
+  out.innerHTML = '<p>No authorization code in URL. This page is used only during the TikTok login flow.</p>';
+}
+</script>
+</body>
+</html>
