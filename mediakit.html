@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ToolDuel — Media Kit</title>
+<meta name="description" content="Measured audience and per-video numbers for ToolDuel, pulled from the YouTube API.">
+<style>
+  :root{--ground:#0d1117;--sunk:#010409;--raised:#141a22;--line:#232c38;
+  --ink:#e6edf3;--dim:#8b98a8;--faint:#5c6775;--gold:#ffc400;
+  --local:#ea6c5c;--google:#3fb950;--claude:#b088ff;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,"SF Mono",Menlo,monospace;
+  --sans:system-ui,"Segoe UI",Roboto,"Helvetica Neue",sans-serif}
+  @media (prefers-color-scheme:light){:root{--ground:#f5f7fa;--sunk:#eaeef4;
+  --raised:#fff;--line:#d3dae4;--ink:#10161e;--dim:#4d5866;--faint:#78838f;
+  --gold:#8a6200;--local:#b8402f;--google:#1f7a34;--claude:#6a3fd0}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:60rem;margin:0 auto;padding:clamp(1.5rem,4vw,3.5rem) 1.25rem 5rem;
+  display:flex;flex-direction:column;gap:clamp(2rem,5vw,3.25rem)}
+  .label{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;
+  letter-spacing:.14em;color:var(--faint)}
+  .badge{align-self:flex-start;font-family:var(--mono);font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--gold);
+  border:1px solid var(--gold);border-radius:4px;padding:.25rem .6rem}
+  h1{font-size:clamp(2.2rem,8vw,3.6rem);line-height:.95;letter-spacing:-.03em;
+  font-weight:800;margin:0}
+  .thesis{font-size:clamp(1.05rem,2.4vw,1.3rem);color:var(--dim);max-width:42ch;margin:0}
+  .asof{color:var(--faint);font-size:.76rem;font-family:var(--mono);margin:0}
+  .readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));
+  border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--raised)}
+  .cell{padding:1rem 1.15rem;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;gap:.3rem}
+  .cell:last-child{border-right:0}
+  .cell b{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.9rem;
+  font-weight:700;line-height:1;letter-spacing:-.02em}
+  .cell.hero b{color:var(--gold)}
+  .cell small{color:var(--faint);font-size:.74rem}
+  .panel{border:1px solid var(--line);border-radius:6px;background:var(--raised);overflow:hidden}
+  .panel>header{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+  padding:.6rem 1rem;background:var(--sunk);border-bottom:1px solid var(--line)}
+  .panel>header .label{color:var(--dim)}
+  .rail-local{border-top:2px solid var(--local)}
+  .rail-google{border-top:2px solid var(--google)}
+  .rail-claude{border-top:2px solid var(--claude)}
+  .rail-gold{border-top:2px solid var(--gold)}
+  .panel-body{padding:1.15rem 1rem 1.35rem;display:flex;flex-direction:column;gap:.85rem}
+  h2{font-size:1.15rem;font-weight:700;letter-spacing:-.015em;margin:0}
+  p{margin:0}
+  .scroller{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:.78rem}
+  th,td{padding:.5rem .6rem;text-align:right;white-space:nowrap}
+  th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;font-size:.66rem;
+  font-weight:500;color:var(--faint);border-bottom:1px solid var(--line)}
+  td{border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;font-family:var(--mono)}
+  th.t,td.t{text-align:left;white-space:normal;font-family:var(--sans);min-width:15rem}
+  tbody tr:last-child td{border-bottom:0}
+  .zero{color:var(--local)} .won{color:var(--gold);font-weight:700}
+  .bar-row{display:grid;grid-template-columns:minmax(0,1fr) 3.6rem;gap:.75rem;align-items:center}
+  .bar-row>span:first-child{font-size:.8rem;color:var(--dim)}
+  .track{position:relative;height:8px;background:var(--sunk);border:1px solid var(--line);
+  border-radius:999px}
+  .fill{position:absolute;inset:0 auto 0 0;border-radius:999px;background:var(--google)}
+  .fill.over{background:var(--gold)}
+  .bar-val{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.78rem;text-align:right}
+  .bar-val.gold{color:var(--gold)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:1.25rem}
+  .rules{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5rem}
+  .rules li{padding-left:1.4rem;position:relative}
+  .rules li::before{content:"—";position:absolute;left:0;color:var(--gold);font-family:var(--mono)}
+  a{color:var(--gold);text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
+  footer{border-top:1px solid var(--line);padding-top:1.25rem;color:var(--faint);
+  font-size:.78rem;display:flex;flex-direction:column;gap:.5rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:1rem">
+  <span class="badge">Media Kit · Independent AI Benchmarks</span>
+  <h1>ToolDuel</h1>
+  <p class="thesis">Same prompt. Three AIs. One browser. Every number on screen is measured, and the harness declares no winner when its own builder is competing.</p>
+  <p class="asof">Pulled from the YouTube Data API v3 and Analytics API v2 on 31 July 2026. Channel opened 2026-07-22. Nothing on this page is estimated.</p>
+</header>
+
+<section class="readout">
+  <div class="cell hero"><span class="label">Avg view rate</span><b>63.2%</b><small>last 90 days</small></div>
+  <div class="cell hero"><span class="label">Best video</span><b>157.1%</b><small>watched more than once</small></div>
+  <div class="cell"><span class="label">Views</span><b>3,592</b><small>all time</small></div>
+  <div class="cell"><span class="label">Videos</span><b>13</b><small>published</small></div>
+  <div class="cell"><span class="label">Subscribers</span><b>5</b><small>stated plainly</small></div>
+</section>
+
+<section class="panel rail-gold">
+  <header><span class="label">What this channel is</span></header>
+  <div class="panel-body">
+    <h2>A benchmark that publishes its own conflict of interest</h2>
+    <p>Every episode gives the identical coding prompt to three systems — Google's free Gemini tier, a Qwen2.5-Coder 7B running locally on an RTX 3060, and Claude Code. All three open in the same browser, record for nine seconds, and get measured the same way: generation time, lines of code, distinct colours in a frame, pixel-difference motion, and JavaScript errors captured live from the console.</p>
+    <p>Claude Code also wrote the measurement harness. That is disclosed in every video, and <strong>no winner is declared in any comparison it takes part in</strong> — including episodes where it clearly produced the better output. When Google's free tier beat it on colour richness, the video said so.</p>
+  </div>
+</section>
+
+<section class="panel rail-google">
+  <header><span class="label">Retention</span><span class="label">% of each video actually watched</span></header>
+  <div class="panel-body">
+    <p>Bars past the track are videos viewers watched more than once.</p>
+<div class="bar-row"><span>4 AI voices read the same sentence — one will…</span><span class="bar-val gold">157.1%</span></div><div class="track"><span class="fill over" style="width:100.0%"></span></div>
+<div class="bar-row"><span>2 free AIs got the same prompt. One never…</span><span class="bar-val gold">111.5%</span></div><div class="track"><span class="fill over" style="width:71.0%"></span></div>
+<div class="bar-row"><span>Both AIs ran with zero errors. Only one…</span><span class="bar-val">96.0%</span></div><div class="track"><span class="fill" style="width:61.1%"></span></div>
+<div class="bar-row"><span>I let Claude Code into its own competition…</span><span class="bar-val">59.0%</span></div><div class="track"><span class="fill" style="width:37.6%"></span></div>
+<div class="bar-row"><span>We asked 2 free AIs to make something…</span><span class="bar-val">58.3%</span></div><div class="track"><span class="fill" style="width:37.1%"></span></div>
+  </div>
+</section>
+
+<section class="panel rail-claude">
+  <header><span class="label">Full catalogue</span><span class="label">13 videos · 3,592 views</span></header>
+  <div class="panel-body"><div class="scroller"><table>
+    <thead><tr><th class="t">Video</th><th>Views</th><th>Watched</th><th>Subs</th><th>Likes</th><th>Comments</th></tr></thead>
+    <tbody>
+<tr><td class="t">We asked 2 free AIs to make something beautiful. One made…</td><td>1,144</td><td>58.3%</td><td class="zero">0</td><td>8</td><td>1</td></tr>
+<tr><td class="t">Both AIs ran with zero errors. Only one understood the…</td><td>844</td><td class="won">96.0%</td><td class="zero">0</td><td>6</td><td>3</td></tr>
+<tr><td class="t">I let Claude Code into its own competition. Judge for…</td><td>738</td><td>59.0%</td><td class="zero">0</td><td>2</td><td>1</td></tr>
+<tr><td class="t">2 free AIs got the same prompt. One never even started.</td><td>612</td><td class="won">111.5%</td><td class="zero">0</td><td>2</td><td>1</td></tr>
+<tr><td class="t">Two free AIs built the same landing page. One is…</td><td>158</td><td>46.4%</td><td class="zero">0</td><td>2</td><td>1</td></tr>
+<tr><td class="t">One of these AIs forgot the sun.</td><td>145</td><td>0%</td><td class="zero">0</td><td>3</td><td>1</td></tr>
+<tr><td class="t">We made 5 AI voices PANIC — machines hate acting</td><td>90</td><td>47.7%</td><td class="zero">0</td><td>6</td><td>3</td></tr>
+<tr><td class="t">Rank these 5 AI voices — everyone disagrees</td><td>80</td><td>56.5%</td><td class="zero">0</td><td>3</td><td>3</td></tr>
+<tr><td class="t">4 AI voices read the same sentence — one will fool you</td><td>35</td><td class="won">157.1%</td><td>1</td><td>4</td><td>1</td></tr>
+<tr><td class="t">People pay $30/month for AI cartoons. Mine cost $0 — he's…</td><td>11</td><td>46.8%</td><td class="zero">0</td><td>3</td><td>1</td></tr>
+<tr><td class="t">I Hid My AI Voice Among 5 Contestants. Can You Catch It?</td><td>10</td><td>26.6%</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td class="t">I Cloned My Own Voice for $0. It Beat My Lie Detector.</td><td>6</td><td>15.3%</td><td class="zero">0</td><td>2</td><td>1</td></tr>
+<tr><td class="t">Both free AIs failed the hexagon test.</td><td>4</td><td>0%</td><td class="zero">0</td><td>0</td><td>1</td></tr>
+    </tbody></table></div></div>
+</section>
+
+<div class="grid2">
+  <section class="panel rail-local">
+    <header><span class="label">Who watches</span></header>
+    <div class="panel-body">
+<div class="bar-row"><span>Male 25–34</span><span class="bar-val">40%</span></div><div class="track"><span class="fill" style="width:40%"></span></div>
+<div class="bar-row"><span>Male 18–24</span><span class="bar-val">20.3%</span></div><div class="track"><span class="fill" style="width:20.3%"></span></div>
+<div class="bar-row"><span>Male 35–44</span><span class="bar-val">17.3%</span></div><div class="track"><span class="fill" style="width:17.3%"></span></div>
+<div class="bar-row"><span>Male 13–17</span><span class="bar-val">12.9%</span></div><div class="track"><span class="fill" style="width:12.9%"></span></div>
+<div class="bar-row"><span>Male 45–54</span><span class="bar-val">8.2%</span></div><div class="track"><span class="fill" style="width:8.2%"></span></div>
+<div class="bar-row"><span>Female 25–34</span><span class="bar-val">1.3%</span></div><div class="track"><span class="fill" style="width:1.3%"></span></div>
+    </div>
+  </section>
+  <section class="panel rail-local">
+    <header><span class="label">Where they are</span></header>
+    <div class="panel-body"><div class="scroller"><table>
+      <thead><tr><th class="t">Country</th><th>Views</th><th>Share*</th></tr></thead>
+      <tbody>
+<tr><td class="t">United States</td><td>406</td><td>31.4%</td></tr>
+<tr><td class="t">Germany</td><td>221</td><td>17.1%</td></tr>
+<tr><td class="t">Russia</td><td>124</td><td>9.6%</td></tr>
+<tr><td class="t">Indonesia</td><td>98</td><td>7.6%</td></tr>
+<tr><td class="t">United Kingdom</td><td>97</td><td>7.5%</td></tr>
+<tr><td class="t">Philippines</td><td>92</td><td>7.1%</td></tr>
+      </tbody></table></div>
+      <p class="asof">*Share of views from the ten largest countries.</p>
+    </div>
+  </section>
+</div>
+
+<section class="panel rail-gold">
+  <header><span class="label">What is actually for sale</span><span class="label">and what is not</span></header>
+  <div class="panel-body">
+    <p>At 5 subscribers, reach is not the product. <strong>The measurement is.</strong> A tool company can commission a duel, receive the recorded runs and the raw numbers, and reuse the finished video in its own marketing. The audience the channel already reaches is a bonus, not the invoice.</p>
+    <ul class="rules">
+      <li><strong>A sponsor can buy inclusion in a duel.</strong> Same prompt, same browser, same instrumentation.</li>
+      <li><strong>A sponsor cannot buy the result.</strong> If the tool loses, the video says it lost.</li>
+      <li><strong>Every number stays reproducible.</strong> The prompt, harness and recordings are published.</li>
+      <li><strong>Disclosure is on screen</strong>, not buried in a description.</li>
+    </ul>
+    <p style="color:var(--dim)">A benchmark that can be bought is worth nothing to the next sponsor. Protecting that is the business model, not a courtesy.</p>
+  </div>
+</section>
+
+<section class="panel rail-claude">
+  <header><span class="label">Where the views come from</span><span class="label">90 days</span></header>
+  <div class="panel-body"><div class="scroller"><table>
+    <thead><tr><th class="t">Source</th><th>Views</th></tr></thead>
+    <tbody>
+<tr><td class="t">Shorts feed</td><td>2,761</td></tr>
+<tr><td class="t">Other YouTube pages</td><td>177</td></tr>
+<tr><td class="t">YouTube search</td><td>70</td></tr>
+<tr><td class="t">Channel page</td><td>24</td></tr>
+<tr><td class="t">Subscriber feed</td><td>12</td></tr>
+<tr><td class="t">External / no link</td><td>5</td></tr>
+<tr><td class="t">Notifications</td><td>5</td></tr>
+    </tbody></table></div></div>
+</section>
+
+<footer>
+  <p>ToolDuel — independent AI tool benchmarks. <a href="index.html">Home</a> · YouTube, Instagram, TikTok and X: <strong>@toolduel</strong></p>
+  <p>Enquiries: <a href="mailto:toolduel465@gmail.com">toolduel465@gmail.com</a></p>
+  <p>Audience skews 78% male 18–44; 65% of top-country views come from the US, Germany and the UK. Dashes mark metrics the API had not yet returned for recently published videos. No figure on this page was entered by hand.</p>
+</footer>
+
+</div>
+</body>
+</html>
